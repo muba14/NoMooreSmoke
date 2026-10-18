@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NoMooreSmoke</title>
+<meta name="description" content="Sigarayı bıraktığın günden beri geçen süre, cebinde kalan para ve sağlığındaki iyileşme.">
+<meta name="theme-color" content="#F5FAEE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="NoMooreSmoke">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: tek sütun telefon ekranı; üstte logo şeridi, ortada sekme içeriği, altta sabit 3'lü sekme çubuğu */
+:root{
+  --lime:#A6E35B;      /* ana açık yeşil */
+  --lime-soft:#E6F7CF;
+  --paper:#F5FAEE;     /* yeşile kayan beyaz */
+  --card:#FFFFFF;
+  --ink:#0F1710;       /* yeşile kayan siyah */
+  --ink-2:#4A5A4B;
+  --line:#D7E6C4;
+  --warn:#E5484D;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+:root{padding-top:env(safe-area-inset-top,0px)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--paper);z-index:10}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+.app{max-width:440px;margin:0 auto;min-height:100%;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 110px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:center;gap:12px}
+header svg{width:44px;height:44px;flex:none}
+header h1{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.02em;margin:0;line-height:1}
+header h1 span{color:#5E9A1F}
+header p{margin:2px 0 0;font-size:12px;color:var(--ink-2)}
+.tab{display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin:0}
+h2{font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:-.02em;margin:0;text-wrap:balance}
+
+/* Sayaç */
+.hero{background:var(--ink);color:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.hero .eyebrow{color:var(--lime)}
+.clock{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.clock div{background:#1D2A1E;border-radius:14px;padding:10px 4px;text-align:center}
+.clock b{display:block;font-family:var(--f-mono);font-size:26px;font-weight:700;color:var(--lime);font-variant-numeric:tabular-nums}
+.clock small{font-size:11px;color:#B9C8B5}
+.hero .since{font-size:12px;color:#B9C8B5;margin:0}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.stat .v{font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat .s{font-size:12px;color:var(--ink-2)}
+.money{background:var(--lime)}
+.money .s{color:#2B3D1C}
+
+.buy{background:var(--lime-soft);border:1px dashed #8CC64A;border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center}
+.buy .ic{width:46px;height:46px;border-radius:14px;background:var(--card);display:grid;place-items:center;flex:none}
+.buy .ic svg{width:26px;height:26px}
+.buy b{font-family:var(--f-display);font-size:17px}
+.buy p{margin:0;font-size:12px;color:var(--ink-2)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.panel-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.panel-h h3{margin:0;font-family:var(--f-display);font-size:17px;font-weight:800}
+.pct{font-family:var(--f-mono);font-weight:700;font-size:15px}
+.bar{height:14px;border-radius:99px;background:#EAF2DF;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7BC23A,var(--lime));transition:width .6s}
+.ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2);margin:0}
+.chart-wrap{overflow-x:auto}
+.chart-wrap svg{display:block;width:100%;height:auto;min-width:300px}
+.next{display:flex;gap:8px;align-items:center;font-size:13px;background:var(--paper);border-radius:12px;padding:8px 10px}
+.next b{font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:#7BC23A;flex:none}
+
+/* Motivasyon */
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:4px}
+.seg button{flex:1;border:0;background:none;font:700 13px var(--f-body);padding:9px;border-radius:99px;color:var(--ink-2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--lime)}
+.story{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.story .who{display:flex;align-items:center;gap:10px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--lime);display:grid;place-items:center;font-family:var(--f-display);font-weight:800}
+.story .who b{display:block;font-size:14px}
+.story .who small{color:var(--ink-2);font-size:12px}
+.story p{margin:0;font-size:14px}
+.chip{align-self:flex-start;font-size:11px;font-weight:700;background:var(--lime-soft);color:#3E6A13;padding:3px 9px;border-radius:99px}
+.quote{border-left:4px solid var(--lime);background:var(--card);border-radius:4px 18px 18px 4px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.quote q{font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.35;quotes:"“" "”"}
+.quote .by{font-size:13px;font-weight:700}
+.quote .by span{font-weight:500;color:var(--ink-2)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;font:600 12px var(--f-body);cursor:pointer;color:var(--ink)}
+.filters button[aria-pressed="true"]{background:var(--lime);border-color:var(--lime)}
+
+/* Ayarlar */
+form{display:flex;flex-direction:column;gap:12px}
+label{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:13px}
+label small{font-weight:500;color:var(--ink-2)}
+input{font:500 16px var(--f-body);padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%}
+input:focus{outline:2px solid #7BC23A;outline-offset:1px}
+.btn{border:0;background:var(--ink);color:var(--lime);font:800 15px var(--f-display);padding:14px;border-radius:16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--warn);border:1px solid #F3C5C6}
+.toast{font-size:13px;font-weight:700;color:#3E6A13;min-height:20px;margin:0}
+
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:5}
+nav .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav button{border:0;background:none;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;font:700 11px var(--f-body);color:var(--ink-2);cursor:pointer}
+nav button svg{width:24px;height:24px}
+nav button .pill{padding:4px 18px;border-radius:99px}
+nav button[aria-selected="true"]{color:var(--ink)}
+nav button[aria-selected="true"] .pill{background:var(--lime)}
+button:focus-visible{outline:2px solid #5E9A1F;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Sıfırlama mesajı seçimi */
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+legend{font-weight:700;font-size:13px;padding:0;margin-bottom:6px}
+legend small{display:block;font-weight:500;color:var(--ink-2)}
+.opt{flex-direction:row;align-items:flex-start;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;font-weight:500}
+.opt input{width:18px;height:18px;margin:2px 0 0;accent-color:#5E9A1F;flex:none}
+.opt b{display:block;font-size:14px}
+.opt span{font-size:12px;color:var(--ink-2)}
+.opt:has(input:checked){border-color:#7BC23A;background:var(--lime-soft)}
+/* Sıfırlama penceresi */
+.modal{position:fixed;inset:0;z-index:20;background:rgba(15,23,16,.55);display:flex;align-items:center;justify-content:center;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+.sheet{background:var(--card);border-radius:24px;max-width:380px;width:100%;padding:24px 20px 18px;display:flex;flex-direction:column;gap:12px;text-align:center;animation:pop .25s ease-out}
+.sheet .big{font-size:44px;line-height:1}
+.sheet h3{margin:0;font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.01em;text-wrap:balance}
+.sheet p{margin:0;font-size:14px;color:var(--ink-2)}
+.lost{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lost div{background:var(--paper);border-radius:14px;padding:10px}
+.lost b{display:block;font-family:var(--f-mono);font-size:17px;color:var(--warn)}
+.lost small{font-size:11px;color:var(--ink-2)}
+.sheet.harsh{background:var(--ink)}
+.sheet.harsh h3{color:var(--lime)}
+.sheet.harsh p{color:#B9C8B5}
+.sheet.harsh .lost div{background:#1D2A1E}
+.sheet.harsh .lost small{color:#B9C8B5}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="1" y="1" width="62" height="62" rx="16" fill="#A6E35B"/>
+      <g transform="rotate(-28 32 32)">
+        <rect x="10" y="28" width="36" height="8" rx="1.5" fill="#fff" stroke="#0F1710" stroke-width="1.5"/>
+        <rect x="46" y="28" width="9" height="8" rx="1.5" fill="#E89A4A" stroke="#0F1710" stroke-width="1.5"/>
+        <rect x="8" y="28" width="4" height="8" rx="1" fill="#3B3B3B"/>
+      </g>
+      <circle cx="32" cy="32" r="22" fill="none" stroke="#E5484D" stroke-width="6"/>
+      <line x1="16.5" y1="16.5" x2="47.5" y2="47.5" stroke="#E5484D" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <div><h1>NoMoore<span>Smoke</span></h1><p id="greet">Dumansız günlerin sayılıyor</p></div>
+  </header>
+
+  <!-- ANA SAYFA -->
+  <section class="tab" id="t-home">
+    <div class="hero">
+      <p class="eyebrow">Sigarasız geçen süre</p>
+      <div class="clock">
+        <div><b id="cd">0</b><small>gün</small></div>
+        <div><b id="ch">00</b><small>saat</small></div>
+        <div><b id="cm">00</b><small>dakika</small></div>
+        <div><b id="cs">00</b><small>saniye</small></div>
+      </div>
+      <p class="since" id="since"></p>
+    </div>
+
+    <div class="pair">
+      <div class="stat money"><span class="s">Cebinde kalan</span><span class="v" id="money">₺0</span><span class="s" id="perday"></span></div>
+      <div class="stat"><span class="s">Kurtarılan zaman</span><span class="v" id="saved">0 sa</span><span class="s" id="notsmoked"></span></div>
+    </div>
+
+    <div class="buy">
+      <div class="ic" id="buyIc"></div>
+      <div><p>Bu parayla alabilirsin</p><b id="buyName">—</b><p id="buyNext"></p></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h"><h3>Diş sağlığı</h3><span class="pct" id="toothPct">0%</span></div>
+      <div class="bar" role="progressbar" aria-label="Diş sağlığı" id="toothBar"><i id="toothFill" style="width:0"></i></div>
+      <div class="ticks"><span>Başlangıç</span><span>2 hafta</span><span>3 ay</span><span>1 yıl</span></div>
+      <p class="note" id="toothNote"></p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h"><h3>Akciğer iyileşmesi</h3><span class="pct" id="lungPct">0%</span></div>
+      <div class="chart-wrap"><svg id="lung" viewBox="0 0 340 190" role="img" aria-label="Akciğer iyileşme grafiği"></svg></div>
+      <div class="next"><span class="dot"></span><span id="lungNext"></span></div>
+      <p class="note">Değerler genel iyileşme takvimine dayalı tahminlerdir, tıbbi ölçüm değildir.</p>
+    </div>
+  </section>
+
+  <!-- MOTİVASYON -->
+  <section class="tab" id="t-moti" hidden>
+    <div><p class="eyebrow">Güç topla</p><h2>Bırakanlar ve sözler</h2></div>
+    <div class="seg"><button id="sg-s" aria-pressed="true">Hikayeler</button><button id="sg-q" aria-pressed="false">Sözler</button></div>
+    <div id="stories" class="tab"></div>
+    <div id="quotes" class="tab" hidden>
+      <div class="filters" id="filters"></div>
+      <div id="qlist" class="tab"></div>
+    </div>
+  </section>
+
+  <!-- BİLGİLERİM -->
+  <section class="tab" id="t-set" hidden>
+    <div><p class="eyebrow">Bilgilerim</p><h2>Hesaplamaları sana göre ayarla</h2></div>
+    <form id="f">
+      <label for="name">Adın <small>İsteğe bağlı</small><input id="name" type="text" maxlength="30"></label>
+      <label for="quit">Bıraktığın tarih ve saat<input id="quit" type="datetime-local" required></label>
+      <label for="daily">Günde kaç sigara içiyordun?<input id="daily" type="number" min="1" max="100" required></label>
+      <label for="price">Bir paketin fiyatı (₺)<input id="price" type="number" min="1" step="0.5" required></label>
+      <label for="pack">Paketteki sigara sayısı<input id="pack" type="number" min="1" max="40" required></label>
+      <label for="mins">Bir sigara kaç dakikanı alıyordu? <small>Yakma, içme, ara verme dahil</small><input id="mins" type="number" min="1" max="30" required></label>
+      <fieldset id="rmodes">
+        <legend>Sayaç sıfırlanınca çıkan mesaj<small>Tekrar sigara içtiğinde seni nasıl uyaralım?</small></legend>
+      </fieldset>
+      <label for="rtext" id="rtextWrap" hidden>Kendi mesajın<input id="rtext" type="text" maxlength="120" placeholder="Örn: Kendine verdiğin sözü hatırla!"></label>
+      <button class="btn" type="submit">Kaydet</button>
+      <p class="toast" id="toast" aria-live="polite"></p>
+      <button class="btn ghost" type="button" id="reset">Sayacı şimdi sıfırla</button>
+    </form>
+  </section>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="sheet" id="sheet">
+    <div class="big" id="mEmoji"></div>
+    <h3 id="mTitle"></h3>
+    <p id="mText"></p>
+    <div class="lost"><div><b id="mStreak"></b><small>sıfırlanan seri</small></div><div><b id="mMoney"></b><small>o süredeki birikim</small></div></div>
+    <button class="btn" type="button" id="mOk">Tamam, yeniden başlıyorum</button>
+  </div>
+</div>
+
+<nav><div class="in" role="tablist">
+  <button role="tab" aria-selected="true" data-t="t-home"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></span>Ana Sayfa</button>
+  <button role="tab" aria-selected="false" data-t="t-moti"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></span>Motivasyon</button>
+  <button role="tab" aria-selected="false" data-t="t-set"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span>Bilgilerim</button>
+</div></nav>
+
+<script>
+const $=id=>document.getElementById(id);
+const KEY="nms-v1";
+const sample={name:"",quit:Date.now()-((12*24+5)*3600+17*60)*1000,daily:20,price:100,pack:20,mins:6,rmode:"saglik",rtext:""};
+let S={...sample,quit:Date.now()},firstRun=true;
+try{const raw=localStorage.getItem(KEY);if(raw){S={...sample,...JSON.parse(raw)};firstRun=false}}catch(e){}
+
+/* Ürün merdiveni: Türkiye için yaklaşık fiyatlar (₺) */
+const items=[
+ [25,"Bir simit ve çay","🥯"],[150,"Bir fincan filtre kahve","☕"],[300,"Bir sinema bileti","🎬"],
+ [450,"Bir roman","📖"],[800,"Arkadaşlarla pizza akşamı","🍕"],[1500,"Aylık spor salonu üyeliği","🏋️"],
+ [2500,"Kablosuz kulaklık","🎧"],[4500,"Koşu ayakkabısı","👟"],[9000,"Akıllı saat","⌚"],
+ [18000,"Şehir bisikleti","🚲"],[30000,"Hafta sonu tatili (2 kişi)","🏖️"],[55000,"Yeni bir akıllı telefon","📱"],
+ [90000,"Laptop","💻"],[200000,"Yurt dışı tatili","✈️"],[400000,"Motosiklet","🏍️"],[800000,"Otomobil","🚗"]
+];
+const fmtTL=n=>"₺"+Math.floor(n).toLocaleString("tr-TR");
+const pad=n=>String(n).padStart(2,"0");
+
+/* Akciğer: genel iyileşme takvimi (x eşit aralıklı kilometre taşları) */
+const lungSteps=[
+ [0,"Başla",0,"Son sigara"],
+ [20*60,"20 dk",6,"Nabız ve tansiyon düşmeye başlar"],
+ [12*3600,"12 sa",14,"Kandaki karbonmonoksit normale iner"],
+ [14*86400,"2 hf",28,"Dolaşım ve akciğer fonksiyonu artmaya başlar"],
+ [90*86400,"3 ay",45,"Akciğer kapasitesi belirgin şekilde artar"],
+ [270*86400,"9 ay",62,"Öksürük ve nefes darlığı azalır"],
+ [365*86400,"1 yıl",72,"Kalp hastalığı riski yarıya iner"],
+ [5*365*86400,"5 yıl",86,"İnme riski sigara içmeyenlere yaklaşır"],
+ [10*365*86400,"10 yıl",100,"Akciğer kanseri riski yaklaşık yarıya iner"]
+];
+function lungAt(sec){
+  for(let i=1;i<lungSteps.length;i++){
+    const [t0,,p0]=lungSteps[i-1],[t1,,p1]=lungSteps[i];
+    if(sec<t1){const f=(sec-t0)/(t1-t0);return{pos:i-1+f,pct:p0+(p1-p0)*f,next:lungSteps[i]}}
+  }
+  return{pos:lungSteps.length-1,pct:100,next:null};
+}
+function drawLung(sec){
+  const W=340,H=190,L=34,R=12,T=14,B=30,n=lungSteps.length-1;
+  const X=i=>L+(W-L-R)*i/n, Y=p=>T+(H-T-B)*(1-p/100);
+  const {pos,pct}=lungAt(sec);
+  let s="";
+  [0,50,100].forEach(p=>{s+=`<line x1="${L}" x2="${W-R}" y1="${Y(p)}" y2="${Y(p)}" stroke="#E3EDD6"/><text x="${L-6}" y="${Y(p)+4}" text-anchor="end" font-size="10" fill="#4A5A4B" font-family="Manrope">${p}%</text>`});
+  const pts=lungSteps.map((st,i)=>[X(i),Y(st[2])]);
+  const path=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  // geçilen kısım
+  const done=[];for(let i=0;i<=Math.floor(pos);i++)done.push(pts[i]);
+  const cx=X(pos),cy=Y(pct);done.push([cx,cy]);
+  const dpath=done.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  s+=`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A6E35B" stop-opacity=".55"/><stop offset="1" stop-color="#A6E35B" stop-opacity="0"/></linearGradient></defs>`;
+  s+=`<path d="${dpath} L${cx} ${Y(0)} L${X(0)} ${Y(0)}Z" fill="url(#g)"/>`;
+  s+=`<path d="${path}" fill="none" stroke="#C9D9B6" stroke-width="2" stroke-dasharray="4 4"/>`;
+  s+=`<path d="${dpath}" fill="none" stroke="#5E9A1F" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  lungSteps.forEach((st,i)=>{s+=`<text x="${X(i)}" y="${H-10}" text-anchor="middle" font-size="9.5" fill="#4A5A4B" font-family="Manrope">${st[1]}</text>`;
+    s+=`<circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="2.5" fill="${i<=pos?'#5E9A1F':'#C9D9B6'}"/>`});
+  s+=`<circle cx="${cx}" cy="${cy}" r="9" fill="#A6E35B" opacity=".4"/><circle cx="${cx}" cy="${cy}" r="5" fill="#0F1710" stroke="#fff" stroke-width="2"/>`;
+  $("lung").innerHTML=s;
+}
+
+/* Diş: ilk yıl boyunca kademeli iyileşme */
+const toothSteps=[[0,0],[2*86400,10,"Tat ve koku duyusu güçlenir"],[14*86400,30,"Diş etlerinde kanlanma düzelir"],[90*86400,60,"Diş eti iltihabı riski azalır, lekeler açılmaya başlar"],[365*86400,100,"Diş eti hastalığı riski belirgin şekilde düşer"]];
+function toothAt(sec){
+  for(let i=1;i<toothSteps.length;i++){const [t0,p0]=toothSteps[i-1],[t1,p1,msg]=toothSteps[i];
+    if(sec<t1)return{pct:p0+(p1-p0)*(sec-t0)/(t1-t0),msg,last:toothSteps[i-1][2]}}
+  return{pct:100,msg:null,last:toothSteps[4][2]};
+}
+
+function dur(sec){const d=Math.floor(sec/86400),h=Math.floor(sec%86400/3600);return d?`${d} gün ${h} saat`:`${h} saat ${Math.floor(sec%3600/60)} dk`}
+
+function tick(){
+  const sec=Math.max(0,(Date.now()-S.quit)/1000);
+  $("cd").textContent=Math.floor(sec/86400);
+  $("ch").textContent=pad(Math.floor(sec%86400/3600));
+  $("cm").textContent=pad(Math.floor(sec%3600/60));
+  $("cs").textContent=pad(Math.floor(sec%60));
+  const cigs=sec/86400*S.daily, money=cigs/S.pack*S.price, savedMin=cigs*S.mins;
+  $("money").textContent=fmtTL(money);
+  $("perday").textContent=`Günde ${fmtTL(S.daily/S.pack*S.price)} tasarruf`;
+  $("saved").textContent=savedMin<60?Math.floor(savedMin)+" dk":(savedMin/60).toFixed(1).replace(".",",")+" sa";
+  $("notsmoked").textContent=`${Math.floor(cigs).toLocaleString("tr-TR")} sigara içilmedi`;
+  let pick=null,next=items[0];
+  for(const it of items){if(money>=it[0])pick=it;else{next=it;break}}
+  if(money>=items[items.length-1][0])next=null;
+  $("buyIc").innerHTML=`<span style="font-size:24px">${pick?pick[2]:"⏳"}</span>`;
+  $("buyName").textContent=pick?pick[1]:"Biraz daha sabret";
+  $("buyNext").textContent=next?`Sıradaki: ${next[1]} (${fmtTL(next[0]-money)} kaldı)`:"Hedeflerin hepsini geçtin!";
+  const t=toothAt(sec);
+  $("toothPct").textContent=Math.floor(t.pct)+"%";
+  $("toothFill").style.width=t.pct+"%";
+  $("toothBar").setAttribute("aria-valuenow",Math.floor(t.pct));
+  $("toothNote").textContent=t.msg?`Sıradaki adım: ${t.msg}.`:`${t.last}.`;
+  const l=lungAt(sec);
+  $("lungPct").textContent=Math.floor(l.pct)+"%";
+  $("lungNext").innerHTML=l.next?`<span><b>${dur(l.next[0]-sec)}</b> sonra: ${l.next[3]}</span>`:"<span>Tüm kilometre taşlarını geçtin.</span>";
+  if(Math.floor(sec)%5===0||!$("lung").innerHTML)drawLung(sec);
+}
+function render(){
+  const d=new Date(S.quit);
+  $("since").textContent="Bırakma: "+d.toLocaleString("tr-TR",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
+  $("greet").textContent=S.name?`Harika gidiyorsun, ${S.name}!`:"Dumansız günlerin sayılıyor";
+  $("lung").innerHTML="";tick();
+}
+
+/* Sekmeler */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["t-home","t-moti","t-set"].forEach(id=>$(id).hidden=id!==b.dataset.t);
+  window.scrollTo(0,0);
+});
+
+/* Hikayeler (örnek, kurgusal) */
+const stories=[
+ ["Mert","34, yazılımcı","2 yıldır dumansız","Günde bir buçuk paketten bir sabah sıfıra indim. İlk hafta kahveyi bıraktım çünkü ikisi birbirini çağırıyordu. Şimdi biriktirdiğim parayla aldığım bisikletle işe gidiyorum."],
+ ["Elif","27, hemşire","8 aydır dumansız","Nöbetlerde molaları sigara molası sanıyordum. Molamı merdiven çıkmaya çevirdim. Üçüncü ayda dördüncü kata nefes nefese kalmadan çıktığım gün ağladım."],
+ ["Hasan","52, esnaf","5 yıldır dumansız","Torunum kucağıma gelmek istemedi, üstüm sigara kokuyordu. O akşam son paketi çöpe attım. İlk ay zordu, ama bir daha o bakışı görmek istemedim."],
+ ["Zeynep","21, öğrenci","100 gündür dumansız","Sınav stresine sigarayla dayanıyordum. Telefonuma her istek geldiğinde 5 dakika bekleme kuralı koydum. İsteklerin çoğu 3. dakikada geçip gidiyordu."],
+ ["Burak","41, şoför","1 yıldır dumansız","Hesapladım; yılda bir tatil parasını dumana veriyormuşum. O parayı ayrı bir hesaba koydum. Bu yaz ailemle ilk kez denize gittik."]
+];
+$("stories").innerHTML=`<p class="note">Örnek hikayelerdir; kendi hikayelerinle değiştirebilirsin.</p>`+stories.map(s=>`<article class="story"><div class="who"><div class="av">${s[0][0]}</div><div><b>${s[0]}</b><small>${s[1]}</small></div></div><span class="chip">${s[2]}</span><p>${s[3]}</p></article>`).join("");
+
+/* Sözler */
+const quotes=[
+ ["Alışkanlığın zincirleri, kırılamayacak kadar ağırlaşana dek hissedilemeyecek kadar hafiftir.","Samuel Johnson","İngiliz yazar","Bağımlılık"],
+ ["Sigarayı bırakmak dünyanın en kolay işi. Biliyorum, çünkü binlerce kez yaptım.","Mark Twain","Amerikalı yazar (atfedilir)","Sigara"],
+ ["Motivasyon seni başlatır, alışkanlık devam ettirir.","Jim Rohn","Amerikalı yazar","Bağımlılık"],
+ ["Başkalarını yenmek güçtür; kendini yenmek gerçek kuvvettir.","Lao Tzu","Çinli filozof","Bağımlılık"],
+ ["Biz ertelerken hayat akıp gider.","Seneca","Romalı filozof","Zaman"],
+ ["Hayat kısa değil; biz onun çoğunu boşa harcıyoruz.","Seneca","Romalı filozof","Zaman"],
+ ["Kaybedilen zaman bir daha asla bulunmaz.","Benjamin Franklin","Amerikalı devlet adamı","Zaman"],
+ ["Küçük harcamalara dikkat et; küçük bir delik büyük bir gemiyi batırır.","Benjamin Franklin","Amerikalı devlet adamı","Para"],
+ ["Zaman paradır.","Benjamin Franklin","Amerikalı devlet adamı","Para"],
+ ["Sağlık, insanın en büyük servetidir.","Vergilius","Romalı şair","Sigara"]
+];
+const cats=["Tümü","Bağımlılık","Zaman","Para","Sigara"];let cat="Tümü";
+function drawQ(){
+  $("filters").innerHTML=cats.map(c=>`<button type="button" aria-pressed="${c===cat}">${c}</button>`).join("");
+  $("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{cat=b.textContent;drawQ()});
+  $("qlist").innerHTML=quotes.filter(q=>cat==="Tümü"||q[3]===cat).map(q=>`<figure class="quote" style="margin:0"><q>${q[0]}</q><figcaption class="by">— ${q[1]} <span>· ${q[2]}</span></figcaption><span class="chip">${q[3]}</span></figure>`).join("");
+}
+drawQ();
+$("sg-s").onclick=()=>{$("sg-s").setAttribute("aria-pressed",true);$("sg-q").setAttribute("aria-pressed",false);$("stories").hidden=false;$("quotes").hidden=true};
+$("sg-q").onclick=()=>{$("sg-q").setAttribute("aria-pressed",true);$("sg-s").setAttribute("aria-pressed",false);$("stories").hidden=true;$("quotes").hidden=false};
+
+/* Form */
+function toLocal(ms){const d=new Date(ms);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`}
+
+/* Sıfırlama mesajları */
+const RMODES=[
+ ["basit","Sade","😐","Başarısız oldun.","Sayaç sıfırlandı. Bir dahakine daha dikkatli ol."],
+ ["saglik","Sağlık","🫁","Sen sağlığını hiç düşünmüyorsun!","Ciğerlerin tam toparlanıyordu. Onlara bunu borçlu değil misin?"],
+ ["para","Para","💸","Az önce paranı yaktın!","O sigara, biriktirdiğin hedeflerden birini geri itti."],
+ ["okkali","Okkalı (küfürlü)","🤬","Hassiktir! Yine mi o lanet sigara?!","Bu kadar emeği bir nefes dumana mı verdin lan? Kalk, söndür şunu, baştan başlıyoruz."],
+ ["destek","Destekleyici","🌱","Tökezlemek, bıraktın demek değil.","Bırakanların çoğu birkaç denemede başarır. Bugün yeniden başlıyorsun."],
+ ["ozel","Kendi mesajım","✍️","",""],
+ ["kapali","Pencere çıkmasın","🚫","",""]
+];
+const modeDesc=m=>m[0]==="ozel"?"Aşağıya kendi cümleni yaz":m[0]==="kapali"?"Sayaç sessizce sıfırlanır":m[3];
+$("rmodes").insertAdjacentHTML("beforeend",RMODES.map(m=>`<label class="opt"><input type="radio" name="rmode" value="${m[0]}"><div><b>${m[2]} ${m[1]}</b><span>${modeDesc(m)}</span></div></label>`).join(""));
+function syncMode(){const v=(document.querySelector('input[name=rmode]:checked')||{}).value;$("rtextWrap").hidden=v!=="ozel"}
+$("rmodes").addEventListener("change",()=>{syncMode();S.rmode=document.querySelector('input[name=rmode]:checked').value;save()});
+$("rtext").addEventListener("change",()=>{S.rtext=$("rtext").value.trim();save()});
+function showResetModal(streakSec,lostMoney){
+  const m=RMODES.find(x=>x[0]===S.rmode)||RMODES[1];
+  if(m[0]==="kapali")return;
+  $("mEmoji").textContent=m[2];
+  $("mTitle").textContent=m[0]==="ozel"?(S.rtext||"Sayacı sıfırladın."):m[3];
+  $("mText").textContent=m[0]==="ozel"?"Kendine verdiğin sözü hatırla. Sayaç yeniden başladı.":m[4];
+  $("mStreak").textContent=dur(streakSec);
+  $("mMoney").textContent=fmtTL(lostMoney);
+  $("sheet").className="sheet"+(m[0]==="okkali"?" harsh":"");
+  $("modal").hidden=false;$("mOk").focus();
+}
+$("mOk").onclick=()=>{$("modal").hidden=true};
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal")$("modal").hidden=true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("modal").hidden=true});
+function fill(){const r=document.querySelector(`input[name=rmode][value="${S.rmode}"]`);if(r)r.checked=true;$("rtext").value=S.rtext||"";syncMode();$("name").value=S.name;$("quit").value=toLocal(S.quit);$("daily").value=S.daily;$("price").value=S.price;$("pack").value=S.pack;$("mins").value=S.mins}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+fill();
+$("f").addEventListener("submit",e=>{e.preventDefault();
+  const q=new Date($("quit").value).getTime();
+  if(q>Date.now()){$("toast").style.color="var(--warn)";$("toast").textContent="Bırakma tarihi gelecekte olamaz. Bugün veya daha eski bir tarih seç.";return}
+  S={...S,name:$("name").value.trim(),quit:q,daily:+$("daily").value,price:+$("price").value,pack:+$("pack").value,mins:+$("mins").value,rtext:$("rtext").value.trim()};
+  save();render();$("toast").style.color="";$("toast").textContent="Kaydedildi. Ana sayfa güncellendi.";
+});
+let armed=false;
+$("reset").onclick=()=>{
+  if(!armed){armed=true;$("reset").textContent="Emin misin? Tekrar dokun";setTimeout(()=>{armed=false;$("reset").textContent="Sayacı şimdi sıfırla"},4000);return}
+  armed=false;const streak=Math.max(0,(Date.now()-S.quit)/1000),lost=streak/86400*S.daily/S.pack*S.price;S.quit=Date.now();save();fill();render();$("reset").textContent="Sayacı şimdi sıfırla";$("toast").style.color="";$("toast").textContent="Sayaç sıfırlandı.";showResetModal(streak,lost);
+};
+
+render();setInterval(tick,1000);
+
+/* İlk açılış: önce bilgileri sor */
+if(firstRun){
+  document.querySelector('nav button[data-t="t-set"]').click();
+  $("toast").textContent="Hoş geldin! Başlamak için bilgilerini girip Kaydet'e dokun.";
+}
+
+/* İnternetsiz çalışma */
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>
