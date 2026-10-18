@@ -1,5 +1,35 @@
 # NoMooreSmoke (Web)
 
+
+<p align="center">
+  <img src="screenshots/icon.png" alt="NoMooreSmoke simgesi" width="120">
+</p>
+
+<h1 align="center">NoMooreSmoke</h1>
+
+<p align="center">Sigarasız geçen süreni, cebinde kalan parayı ve sağlığındaki iyileşmeyi takip et.</p>
+
+## Ekran görüntüleri
+
+<table>
+  <tr>
+    <td align="center"><img src="screenshots/01-ana-sayfa.png" width="220"><br><b>Ana Sayfa</b></td>
+    <td align="center"><img src="screenshots/02-saglik.png" width="220"><br><b>Diş ve akciğer sağlığı</b></td>
+    <td align="center"><img src="screenshots/03-hikayeler.png" width="220"><br><b>Hikayeler</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/04-sozler.png" width="220"><br><b>Sözler</b></td>
+    <td align="center"><img src="screenshots/05-bilgilerim.png" width="220"><br><b>Bilgilerim</b></td>
+    <td align="center"><img src="screenshots/06-sifirlama.png" width="220"><br><b>Sıfırlama penceresi</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/07-sifirlama-okkali.png" width="220"><br><b>Okkalı mod</b></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+
 iPhone ve Android'de ana ekrana eklenebilen, internetsiz de açılan sigara bırakma uygulaması.
 
 ## Dosyalar
